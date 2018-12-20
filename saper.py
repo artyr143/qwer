@@ -2,16 +2,17 @@ from random import random
 from math import floor
 
 
-def get_coord():
+
+def get_coord(a):
     '''принимает на ввод 2 числа координат(по осям х у), разделенные пробелом, или слово "мина" и 2 числа
     возвращает coordi & coordj соответственно, а так же mine = True, если было введено слово "мина" и False иначе'''
-    a = input('Проверим в координатах: ').split()
-    if len(a) == 3 and a[0] == 'мина':
+
+    if (len(a) == 3) and (0 <= int(a[1]) < 9999) and (0 <= int(a[2]) < 9999) and (a[0] == 'мина'):
         mine = True
-        coordi, coordj = int(a[1])-1, int(a[2])-1
-    elif len(a) == 2:
+        coordj, coordi = int(a[1])-1, int(a[2])-1
+    elif (len(a) == 2) and (0 <= int(a[0]) < 9999) and (0 <= int(a[1]) < 9999):
         mine = False
-        coordi, coordj = int(a[0])-1, int(a[1])-1
+        coordj, coordi = int(a[0])-1, int(a[1])-1
     else:
         raise ValueError
     return mine, coordi, coordj
@@ -46,9 +47,14 @@ def rep_game():
                             basic[i][j] += 1
     win = True
     while k != 0 and win:
+        for i in bas:
+            for j in i:
+                print(j, end = ' ')
+            print()
         while True:
             try:
-                mine, coordi, coordj = get_coord()
+                a = input('Проверим в координатах: ').split()
+                mine, coordi, coordj = get_coord(a)
                 break
             except:
                 print('ошибка ввода координат, попробуем еще раз: ')
@@ -60,14 +66,10 @@ def rep_game():
         else:
             if basic[coordi][coordj] != -1:
                 bas[coordi][coordj] = basic[coordi][coordj]
-            else: 
+            else:
                 win = False
                 print(('упс... тут была мина, вы проиграли. Сыграем еще? (да/нет)'))
                 bas[coordi][coordj] = '*'
-        for i in bas:
-            for j in i:
-                print(j, end = ' ')
-            print()
     if win:
         print('Поздравляю, вы победили, все мины закрыты! ')
         print('Вам потребовалось закрыть ' + str(mines) + ' ячейки(ек), чтобы закрыть все ' + str(k) + " мин")
