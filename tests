@@ -1,0 +1,20 @@
+from saper import *
+import unittest
+
+
+class SaperTests(unittest.TestCase):
+
+    def test_right_coord1(self):
+        result = get_coord([3, 4])
+        self.assertEqual(result, (False, 2, 3))
+
+    def test_right_coord2(self):
+        result = get_coord(['мина', 3, 4])
+        self.assertEqual(result, (True, 2, 3))
+
+    def test_right_coord3(self):
+        self.assertRaises(ValueError, get_coord, [3, 4, 'мина'])
+
+
+if __name__ == '__main__':
+    unittest.main()
