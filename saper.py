@@ -77,5 +77,3 @@ if __name__ == '__main__':
     if go == 'да':
         print('Введи число строк, столбцов и мин ')
         rep_game()
-    else:
-        break
