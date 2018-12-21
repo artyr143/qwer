@@ -24,6 +24,9 @@ def rep_game():
     while True:
         try:
             n, m, k = (int(i) for i in input('Размер и кол-во мин: ').split())
+            if k > (n * m):
+                print('Кол-во мин не может быть больше размеров поля')
+                raise ValueError
             break
         except:
             print('Данные введены неверно, попробуй еще раз')
