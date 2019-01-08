@@ -1,0 +1,52 @@
+import unittest
+from tki import gurvic, laplas, seved, vald
+
+class TestComp(unittest.TestCase):
+
+
+    def testLaplas(self):
+        matrix = [[18, 8, -2, -12],
+                  [6, 36, 26, 16],
+                  [-6, 24, 54, 44],
+                  [-18, 12, 42, 72]]
+        win = True
+        row = 4
+        test = laplas(matrix, row, win)
+        answer = [3]
+        self.assertEqual(test, answer)
+
+    def testVald(self):
+        matrix = [[18, 8, -2, -12],
+                  [6, 36, 26, 16],
+                  [-6, 24, 54, 44],
+                  [-18, 12, 42, 72]]
+        win = True
+        test = vald(matrix, win)
+        answer = [2]
+        self.assertEqual(test, answer)
+
+    def testSeved(self):
+        matrix = [[18, 8, -2, -12],
+                  [6, 36, 26, 16],
+                  [-6, 24, 54, 44],
+                  [-18, 12, 42, 72]]
+        win = True
+        col = 4
+        test = seved(matrix, col, win)
+        answer = [3]
+        self.assertEqual(test, answer)
+
+    def testGurvic(self):
+        matrix = [[18, 8, -2, -12],
+                  [6, 36, 26, 16],
+                  [-6, 24, 54, 44],
+                  [-18, 12, 42, 72]]
+        win = True
+        lamb = 0.5
+        test = gurvic(matrix, win, lamb)
+        answer = [4]
+        self.assertEqual(test, answer)
+
+
+if __name__ == '__main__':
+    unittest.main()
