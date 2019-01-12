@@ -53,11 +53,13 @@ def rep_game():
                             basic[i][j] += 1
     win = True
     minesOnField = k
-    while True:
+    while win:
         for i in bas:
             for j in i:
                 print(j, end = ' ')
             print()
+        if flags == minesOnField and k == 0:
+            break
         while True:
             try:
                 a = input('Проверим в координатах: ').split()
@@ -86,8 +88,6 @@ def rep_game():
                 win = False
                 print(('упс... тут была мина, вы проиграли. Сыграем еще? (да/нет)'))
                 bas[coordi][coordj] = '*'
-        if flags == minesOnField and k == 0:
-            break
     if win:
         print('Поздравляю, вы победили, все мины закрыты! ')
         print('Вам потребовалось закрыть ' + str(flags) + ' ячейки(ек), чтобы закрыть все ' + str(minesOnField) + " мин")
