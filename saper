@@ -8,14 +8,20 @@ def get_coord(a):
     возвращает coordi & coordj соответственно, а так же mine = True, если было введено слово "мина" и False иначе'''
 
     if (len(a) == 3) and (0 <= int(a[1]) < 9999) and (0 <= int(a[2]) < 9999) and (a[0] == 'мина'):
+        dele = False
         mine = True
         coordj, coordi = int(a[1])-1, int(a[2])-1
     elif (len(a) == 2) and (0 <= int(a[0]) < 9999) and (0 <= int(a[1]) < 9999):
+        dele = False
         mine = False
         coordj, coordi = int(a[0])-1, int(a[1])-1
+    elif (len(a) == 3) and (0 <= int(a[1]) < 9999) and (0 <= int(a[2]) < 9999) and (a[0] == 'снять'):
+        mine = False
+        dele = True
+        coordj, coordi = int(a[1]) - 1, int(a[2]) - 1
     else:
         raise ValueError
-    return mine, coordi, coordj
+    return mine, coordi, coordj, dele
 
 
 def rep_game():
@@ -24,15 +30,12 @@ def rep_game():
     while True:
         try:
             n, m, k = (int(i) for i in input('Размер и кол-во мин: ').split())
-            if k > (n * m):
-                print('Кол-во мин не может быть больше размеров поля')
-                raise ValueError
             break
         except:
             print('Данные введены неверно, попробуй еще раз')
     basic = [[0 for j in range(m)] for i in range(n)]
     bas = [['#' for j in range(m)] for i in range(n)]
-    mines, coordi, coordj = 0, 0, 0
+    flags, coordi, coordj = 0, 0, 0
     for i in range(k):
         while True:
             row, col = floor(random() * n), floor(random() * m)
@@ -49,23 +52,35 @@ def rep_game():
                         if 0 <= ai < n and 0 <= aj < m and basic[ai][aj] == -1:
                             basic[i][j] += 1
     win = True
-    while k != 0 and win:
+    minesOnField = k
+    while win:
         for i in bas:
             for j in i:
                 print(j, end = ' ')
             print()
+        if flags == minesOnField and k == 0:
+            break
         while True:
             try:
                 a = input('Проверим в координатах: ').split()
-                mine, coordi, coordj = get_coord(a)
+                mine, coordi, coordj, dele = get_coord(a)
                 break
             except:
                 print('ошибка ввода координат, попробуем еще раз: ')
         if mine:
-            bas[coordi][coordj] = 'X'
-            mines += 1
-            if basic[coordi][coordj] == -1:
-                k -= 1
+            if bas[coordi][coordj] == '#':
+                bas[coordi][coordj] = 'X'
+                flags += 1
+                if basic[coordi][coordj] == -1:
+                    k -= 1
+            else:
+                print('Ячейка уже открыта, поставить флаг невозможно')
+        elif dele:
+            if bas[coordi][coordj] == 'X':
+                bas[coordi][coordj] = '#'
+                flags -= 1
+            else:
+                print('Ячейка уже открыта, убрать флаг невозможно')
         else:
             if basic[coordi][coordj] != -1:
                 bas[coordi][coordj] = basic[coordi][coordj]
@@ -75,7 +90,7 @@ def rep_game():
                 bas[coordi][coordj] = '*'
     if win:
         print('Поздравляю, вы победили, все мины закрыты! ')
-        print('Вам потребовалось закрыть ' + str(mines) + ' ячейки(ек), чтобы закрыть все ' + str(k) + " мин")
+        print('Вам потребовалось закрыть ' + str(flags) + ' ячейки(ек), чтобы закрыть все ' + str(minesOnField) + " мин")
 
 if __name__ == '__main__':
     go = input('Сыграем? да/нет ')
