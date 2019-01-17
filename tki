@@ -1,0 +1,162 @@
+def comp(row, col, win, lamb):
+    print('введите значения ячеек в строке(через пробел), после чего нажмите \'Enter\' и продолжите ввод'
+          'остальных строк таким же образом: ')
+    matrix = [input().split() for j in range(row)]
+    for i in range(row):
+        for j in range(col):
+            matrix[i][j] = int(matrix[i][j])
+            print(matrix[i][j], end = ' ')
+        print()
+    lap = laplas(matrix, row,  win)
+    print('Лучшие стратегии по Лапласу: ' + str(lap))
+    va = vald(matrix, win)
+    print ('Лучшие стратегии по Вальду: ' + str(va))
+    se = seved(matrix, col, win)
+    print('Лучшие стратегии по Сэведжу: ' + str(se))
+    gu = gurvic(matrix, win, lamb)
+    print('Лучшие стратегии по Гурвицу: ' + str(gu))
+
+
+def laplas(matrix, row, win):
+    bas = []
+    result = []
+    avr = [0 for i in range(row)]
+    for i in range(len(matrix)):
+        a = []
+        for j in range(len(matrix[i])):
+            a.append((matrix[i][j])/4)
+        bas.append(a)
+    for i in range(len(bas)):
+        for j in range(len(bas[i])):
+            avr[i] += bas[i][j]
+
+    if win:
+        Max = max(*avr)
+        for i in range(len(avr)):
+            if avr[i] == Max:
+                result.append(i+1)
+        return result
+    else:
+        Min = min(*avr)
+        for i in range(len(avr)):
+            if avr[i] == Min:
+                result.append(i+1)
+        return result
+
+
+def vald(matrix, win):
+    result = []
+    bas = []
+    if win:
+        for i in range(len(matrix)):
+            Min = min(*matrix[i])
+            bas.append(Min)
+        for i in range(len(bas)):
+            Max = max(*bas)
+            if bas[i] == Max:
+                result.append(i+1)
+        return result
+    else:
+        for i in range(len(matrix)):
+            Max = max(*matrix[i])
+            bas.append(Max)
+        for i in range(len(bas)):
+            Min = min(*bas)
+            if bas[i] == Min:
+                result.append(i+1)
+        return result
+
+
+def seved(matrix, col, win):
+    reMat = [[0 for j in range(len(matrix[0]))] for i in range(len(matrix))]
+    result = []
+    basic = []
+    avr = []
+    col = len(matrix[0])
+    if win:
+        for i in range(col):
+            bas = []
+            for j in range(len(matrix)):
+                bas.append(matrix[j][i])
+            Max = max(*bas)
+            basic.append(Max)
+        for i in range(len(reMat[0])):
+            for j in range(len(reMat)):
+                reMat[j][i] = basic[i] - matrix[j][i]
+    else:
+        for i in range(col):
+            bas = []
+            for j in range(len(matrix)):
+                bas.append(matrix[j][i])
+            Min = min(*bas)
+            basic.append(Min)
+        for i in range(len(reMat[0])):
+            for j in range(len(reMat)):
+                reMat[j][i] = matrix[j][i] - basic[i]
+
+    for i in range(len(reMat)):
+        Max = max(*reMat[i])
+        avr.append(Max)
+    for i in range(len(avr)):
+        Min = min(*avr)
+        if avr[i] == Min:
+            result.append(i+1)
+    return result
+
+def gurvic(matrix, win, lamb):
+    result = []
+    avr = []
+    optim = []
+    pess = []
+    if win:
+        for i in range(len(matrix)):
+            Max = max(*matrix[i])
+            Min = min(*matrix[i])
+            optim.append(Max)
+            pess.append(Min)
+    else:
+        for i in range(len(matrix)):
+            Max = max(*matrix[i])
+            Min = min(*matrix[i])
+            optim.append(Min)
+            pess.append(Max)
+
+    if win:
+        for i in range(len(matrix)):
+            gur = (optim[i] * lamb) - (pess[i] * (1 - lamb))
+            avr.append(gur)
+        Max = max(*avr)
+        for i in range(len(avr)):
+            if avr[i] == Max:
+                result.append(i+1)
+        return result
+    else:
+        for i in range(len(matrix)):
+            gur = (optim[i] * lamb) + (pess[i] * (1 - lamb))
+            avr.append(gur)
+        Min = min(*avr)
+        for i in range(len(avr)):
+            if avr[i] == Min:
+                result.append(i+1)
+        return result
+
+
+def main():
+    print('На данный момент для решения доступно 1 тип задач: \n',
+          '1. комплексная оценка(Лаплас, Вальд, Сэведж, Гурвиц)\n',)
+    task_type = 1
+    if task_type == 1:
+        row = int(input('введите кол-во строчек: '))
+        col = int(input('введите кол-во столбцов: '))
+        Win = input('Матрица выигрышей? (да\нет)')
+        lamb = float(input('введите показатель оптимизма в формате 0.0 : '))
+        if Win == 'да':
+            win = True
+        else:
+            win = False
+        comp(row, col, win, lamb)
+
+
+
+if __name__ == '__main__':
+    main()
